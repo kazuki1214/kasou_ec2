@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
   scope module: :customers do
-    get 'items/index'
-    get 'items/show'
   end
   devise_for :customers
   devise_for :admins
