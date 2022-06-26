@@ -4,15 +4,17 @@ Rails.application.routes.draw do
     get 'top' => 'homes#top', as: 'top'
     get 'search' => 'homes#search', as: 'search'
     get 'customers/:customer_id/orders' => 'orders#index', as: 'customer_orders'
-    resources :customers, only: [:index, :show, :edit, :update]
-    resources :items, except: [:destroy]
-    resources :genres, only: [:index, :create, :edit, :update]
-    resources :orders, only: [:index, :show, :update] do
-      resources :order_details, only: [:update]
+    resources :customers, only:[:index, :show, :edit, :update]
+    resources :items, except:[:destroy]
+    resources :genres, only:[:index, :create, :edit, :update]
+    resources :orders, only:[:index, :show, :update] do
+      resources :order_details, only:[:update]
     end
   end
 
-  scope module: :customers do
+  scope module: :public do
+    root 'homes#top'
+    get 'about' => 'homes#about', as:'about'
     resources :items, only:[:index, :show]
     get 'customers/my_page' => 'customers#show', as:'my_page'
     get 'customers/information/edit' => 'customers#edit'
@@ -33,7 +35,13 @@ Rails.application.routes.draw do
     resources :addresse, except:[:new, :show]
   end
 
-  devise_for :customers
-  devise_for :admins
+  devise_for :publics, controllers: {
+    registrations: 'customers/registrations',
+    sessions:      'customers/sessions'
+  }
+  devise_for :admins, controllers: {
+    sessions:  'admins/sessions',
+    passwords: 'admins/passwords'
+  }
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
